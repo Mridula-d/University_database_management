@@ -23,15 +23,3 @@ It includes classes for **Person, Student, Employee, and University** with inher
 
 ## 🛠️ Tech Stack
 - **Language:** Python 3  
-
----
-
-## ▶️ Example Usage
-```python
-if __name__ == "__main__":
-    uni = University("Codegnan", ['PFS', 'JFS', 'DA', 'DS'])
-    s1 = Student('Prerana', '4h2', 'PFS', 'prerana@gmail.com')
-    
-    print(uni.uni_name)
-    print(uni.addStudent(s1))
-    uni.totalStudents()
