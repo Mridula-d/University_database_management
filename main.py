@@ -1,98 +1,101 @@
-# person class
-class Person:
-    # initilization constaractor, it take name as partrameter
-    def __init__(self, name:str):
+class Person:  # parent class
+    def __init__(self, name: str, age: int):
+        self.age = age
         self.name = name
 
-    #person class display details  method
-    def display_details(self):
-        return f"The Name is {self.name}"
+    def show(self):
+        return f"The Person name is {self.name} and age is {self.age}"
 
 
-# Student Class
-class Student(Person):
-    # Student class take name, roll number, branch, and email as parameters
-    def __init__(self, name:str, roll_no:str, branch:str, email:str=None):
-        super().__init__(name)
-        self.roll_no = roll_no
+class Student(Person):  # inheritance
+    def __init__(self, name: str, age: int, rollno: int, mailid: str, branch: str):
+        super().__init__(name, age)
+        self.rollno = rollno
+        self.mailid = mailid
         self.branch = branch
-        self.email = email
-    
-    # Student class dipaly details method
-    def display_details(self):
-        print(super().display_details())
-        return f"The student roll number is {self.roll_no} and branch is {self.branch}"
-        
+        self.id = rollno  # use rollno as unique ID
 
-# Employee class
+    def show(self):
+        return f"name: {self.name}, age: {self.age}, rollno: {self.rollno}, mail: {self.mailid}, branch: {self.branch}"
+
+
 class Employee(Person):
-    # Employee class take name, employee id, branch,subject and salary as parameters
-    def __init__(self, name, emp_id, branch, subject, salary):
-        super().__init__(name)
-        self.emp_id = emp_id
-        self.branch = branch
+    def __init__(self, name: str, age: int, emailid: str, subject: list[str], salary: float, department: str, emp_id: int):
+        super().__init__(name, age)
+        self.mailid = emailid
         self.subject = subject
         self.salary = salary
-    
-    # Employee class display details method
-    def display_details(self):
-        print(super().display_details())
-        return f"The employee id is {self.emp_id}, and selected branch is {self.branch} and subject is {self.subject}"
-    
+        self.department = department
+        self.id = emp_id  # unique employee ID
 
-# university class
+    def show(self):
+        print(super().show())
+        return f"mail id: {self.mailid}, subject: {self.subject}, salary: {self.salary}, department: {self.department}"
+
+
 class University:
-    def __init__(self, university_name:str, courses:list[str]):
-        self.uni_name = university_name
+    student_table = dict()
+    employee_table = dict()
+
+    def __init__(self, university_name: str, courses: list):
+        self.university_name = university_name
         self.courses = courses
-        self.students_table = dict()
-        self.emp_table = dict()
 
-        pass
-
-    # add student method take student object as parameter
-    def addStudent(self, std_obj):
-        if std_obj.roll_no not in self.students_table:
-            self.students_table[std_obj.roll_no] = [std_obj.name, std_obj.branch, std_obj.email]
-            return f"Successfully {std_obj.name} added to univirsity"
+    def add_student(self, student_obj: Student):
+        if student_obj.id not in University.student_table:
+            University.student_table[student_obj.id] = [student_obj.name, student_obj.age, student_obj.rollno,
+                                                        student_obj.mailid, student_obj.branch]
         else:
-            return "Student id already existed"
+            return "student id already exists"
 
-        
-
-    # add employee method take employe onject as parameter
-    def addEmployee(self,emp_obj):
-        if emp_obj.emp_id not in self.emp_table:
-            self.emp_table[emp_obj.emp_id] = [emp_obj.name, emp_obj.branch, emp_obj.subject, emp_obj.salary]
-            return f"Successfully {emp_obj.name} added to university"
+    def add_employee(self, employee_obj: Employee):
+        if employee_obj.id not in University.employee_table:
+            University.employee_table[employee_obj.id] = [employee_obj.name, employee_obj.age, employee_obj.mailid,
+                                                          employee_obj.subject, employee_obj.salary,
+                                                          employee_obj.department]
         else:
-            return "Employee id already existed"
+            return "employee id already exists"
 
-        
+    def total_students(self, branch: str = None):
+        result = []
+        if branch:
+            for item in University.student_table.items():
+                if University.student_table[item[0]][4] == branch:
+                    result.append(f"student id: {item[0]}, details: {item[1]}")
+        else:
+            for item in University.student_table.items():
+                result.append(f"student id: {item[0]}, details: {item[1]}")
+        return "\n".join(result)
 
-    # add course to current course list
-    def addCourse(self, new_course):
-        self.courses.append(new_course)
-        
+    def total_employees(self, department: str = None):
+        result = []
+        if department:
+            for item in University.employee_table.items():
+                if University.employee_table[item[0]][5] == department:
+                    result.append(f"employee id: {item[0]}, details: {item[1]}")
+        else:
+            for item in University.employee_table.items():
+                result.append(f"employee id: {item[0]}, details: {item[1]}")
+        return "\n".join(result)
 
-    # total student list, (based on requirement it returns)
-    def totalStudents(self, search_branch:str = None):
-        if search_branch:
-            for item in self.students_table.items():
-                if item[1][1] == search_branch:
-                    print(item)
-        
-
-    # total employee list, (based on requirement it returns)
-    def totalEmployes(self):
-        for item in self.emp_table.items():
-            print(item)
+    def add_course(self, course_name: str):
+        if course_name not in self.courses:
+            self.courses.append(course_name)
+            return f"{course_name} added successfully"
+        else:
+            return f"{course_name} already exists"
 
 
-# main function
+# main
 if __name__ == "__main__":
-    uni = University("Codegnan",['PFS', 'JFS', 'DA', 'DS'])
-    s1 = Student('prerana', '4h2', 'PFS', 'prerana@gmail.com')
-    print(uni.uni_name)
-    print(uni.addStudent(s1))
-    print(uni.totalStudents())
+    u = University("VIT", ["cse", "ece", "mech", "robotics"])
+    s1 = Student("MRIDULA", 20, 4204, "MRI@gmail.com", "cse")
+    u.add_student(s1)
+    s2 = Student("LALIT", 21, 4205, "LAL@gmail.com", "ece")
+    u.add_student(s2)
+    s3 = Student("SUSHMA", 21, 4206, "SUS@gmail.com", "cse")
+    u.add_student(s3)
+    print(u.total_students(branch="cse"))
+    print("************************************************************************************")
+    print(u.total_students()) 
+    #try to give choices and also add emploee details in main. ----->task
